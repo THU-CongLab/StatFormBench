@@ -87,7 +87,7 @@ python evaluation/evaluate_combined.py [optional: pkl_path]
 - **Script path**: `evaluation/evaluate_combined.py`
 - **Input**: a PKL file containing model outputs (produced by `run.py`). If no `pkl_path` argument is provided, the script defaults to `results/all_models_result_other.pkl`.
 - **Output**: evaluation results are saved as a CSV file to the `evaluation/evaluation_results/` directory. The output filename is derived from the input PKL name with an `_evaluated` suffix (e.g., `all_models_result_other_evaluated.csv`).
-- **Workflow**: the script reads each sample, looks up the corresponding ground-truth answer from `statformbench.pkl`, computes the metrics (JCV, PV, RV, ACC@1st, ACC@2nd, VRI), and writes the annotated results to CSV.
+- **Workflow**: the script reads each sample, looks up the corresponding ground-truth answer from `statformbench.pkl`, computes the metrics (JCV, PV, RV, $ACC_{CG}$, $ACC_{FG}$, VRI), and writes the annotated results to CSV.
 
 ### 📏 Evaluation Metrics
 
