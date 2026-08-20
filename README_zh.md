@@ -89,7 +89,7 @@ python evaluation/evaluate_combined.py [可选: pkl_path]
 - **脚本路径**：`evaluation/evaluate_combined.py`
 - **输入**：包含模型输出的 PKL 文件（由 `run.py` 生成）。若未提供 `pkl_path` 参数，脚本默认使用 `results/all_models_result_other.pkl`。
 - **输出**：评估结果以 CSV 文件形式保存到 `evaluation/evaluation_results/` 目录。输出文件名由输入 PKL 文件名加 `_evaluated` 后缀生成（如 `all_models_result_other_evaluated.csv`）。
-- **流程**：脚本逐条读取样本，从 `statformbench.pkl` 中查找对应的标准答案，计算各项指标（JCV、PV、RV、ACC@1st、ACC@2nd、VRI），并将带有评估指标的结果写入 CSV 文件。
+- **流程**：脚本逐条读取样本，从 `statformbench.pkl` 中查找对应的标准答案，计算各项指标（JCV、PV、RV、$ACC_{CG}$、$ACC_{FG}$、VRI），并将带有评估指标的结果写入 CSV 文件。
 
 ### 📏 评估指标
 
