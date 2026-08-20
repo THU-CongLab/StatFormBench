@@ -1,0 +1,86 @@
+﻿index,hierarchy1,hierarchy2
+1,Data Preprocessing,Missing Value Handling
+2,Data Preprocessing,Outlier Handling
+3,Data Preprocessing,Standardization
+4,Data Preprocessing,Binning
+5,Data Preprocessing,Transformation
+6,Mathematical Calculation,"Probability Space Related (e.g., number of states)"
+7,Mathematical Calculation,Event Probability and Independence
+8,Mathematical Calculation,Expectation
+9,Mathematical Calculation,Minimum Sample Size Required to Achieve a Specified Probability
+10,Mathematical Calculation,Distribution Derivation
+11,Mathematical Calculation,Other
+12,Numerical Computation,Obtaining Model Parameter Estimates
+13,Numerical Computation,Sampling from a Specified Distribution
+14,Descriptive Statistics,Measures of Central Tendency
+15,Descriptive Statistics,Measures of Dispersion
+16,Descriptive Statistics,Measures of Distribution Range
+17,Descriptive Statistics,Measures of Frequency and Proportion
+18,Descriptive Statistics,Quantiles/Percentiles
+19,Descriptive Statistics,Network Graph Indicators
+20,Descriptive Statistics,Analysis and Comparison of Statistical Properties
+21,Descriptive Statistics,"Other (e.g., reliability)"
+22,Data Distribution Modelling,Model Building
+23,Data Distribution Modelling,MLE
+24,Data Distribution Modelling,Bayesian
+25,Data Visualization,Distribution of Discrete Variables
+26,Data Visualization,Distribution of Continuous Variables
+27,Data Visualization,Relationship Between Discrete and Continuous Variables
+28,Data Visualization,Relationship Between Continuous Variables
+29,Data Visualization,Relationship Between Discrete Variables
+30,Data Visualization,Comprehensive Comparison of Multiple Variables
+31,Data Visualization,Trends Over Time
+32,Data Visualization,Spatial and Geographic Visualization
+33,Data Visualization,Text and Symbolic Visualization
+34,Data Visualization,Stem-and-Leaf Plot
+35,Data Visualization,Other Statistical Graphics
+36,Association Analysis,Correlation Coefficient (One-dimensional)
+37,Association Analysis,CCA (Multidimensional)
+38,Association Analysis,Contingency Table
+39,Clustering,Clustering
+40,Dimensionality Reduction,Dimensionality Reduction
+41,Hypothesis Testing and Interval Estimation,Independence Test
+42,Hypothesis Testing and Interval Estimation,Mean Test
+43,Hypothesis Testing and Interval Estimation,Variance Test
+44,Hypothesis Testing and Interval Estimation,ANOVA
+45,Hypothesis Testing and Interval Estimation,Distribution Test
+46,Hypothesis Testing and Interval Estimation,Proportion Test
+47,Hypothesis Testing and Interval Estimation,Likelihood Ratio Test
+48,Hypothesis Testing and Interval Estimation,Sequential Test
+49,Hypothesis Testing and Interval Estimation,Randomness
+50,Hypothesis Testing and Interval Estimation,Regression Model Parameter Test
+51,Hypothesis Testing and Interval Estimation,Analysis of Test Properties
+52,Model Comparison (Variable Selection),"Criterion-Based Comparison (AIC, BIC, etc.)"
+53,Model Comparison (Variable Selection),Cross-Validation
+54,Model Comparison (Variable Selection),Likelihood Ratio Test
+55,Model Comparison (Variable Selection),"ROC Curve (AUC), Coverage-Capture Rate Curve"
+56,Model Comparison (Variable Selection),Identification of Important Variables
+57,Model Diagnosis,Residual Analysis
+58,Model Diagnosis,Goodness-of-Fit Assessment
+59,Model Interpretation,Interpretation of Regression Coefficient Significance and Direction
+60,Model Interpretation,Interpretation of Regression Effect Size
+61,Model Interpretation,Interpretation of Factors Influencing Classification or Occurrence Probability
+62,Model Interpretation,Interpretation of Mechanisms Influencing Ordered Outcomes
+63,Model Interpretation,Interpretation of Variable Importance Ranking
+64,Model Interpretation,Interpretation of Group Heterogeneity
+65,Classification and Prediction,Continuous Value Prediction
+66,Classification and Prediction,Categorical Variable Classification
+67,Classification and Prediction,Multi-class Classification of Ordered Variables
+68,Classification and Prediction,Quantile Prediction
+69,Classification and Prediction,Survival Analysis
+70,Time Series Analysis,Lag Correlation Analysis
+71,Time Series Analysis,Stationarity Analysis
+72,Time Series Analysis,Seasonality Analysis
+73,Time Series Analysis,Deterministic Factor Decomposition
+74,Time Series Analysis,Volatility Analysis
+75,Text Data Analysis,Word Frequency Statistics
+76,Text Data Analysis,Topic Modeling
+77,Text Data Analysis,Sentiment Analysis
+78,Network Data Analysis,Community Detection
+79,Network Data Analysis,Link Prediction
+80,Experimental Design,Experiment (Sampling) Plan Design
+81,Experimental Design,Experiment (Sampling) Plan Evaluation
+82,Causal Inference,Observational Data
+83,Causal Inference,Experimental Data
+84,Critical Evaluation of Statistical Results,Identification of Statistical Fallacies and Biases
+85,Critical Evaluation of Statistical Results,Evaluation of Reliability of Statistical Results
