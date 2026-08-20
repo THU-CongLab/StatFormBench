@@ -63,7 +63,7 @@ Each line corresponds to a model that will be tested against all samples in the 
 
 ## 🚀 Usage
 
-### ▶️ Running the Test
+### ▶️ Running the Benchmark
 
 Execute the main script to run the benchmark:
 
