@@ -1,12 +1,12 @@
-# statformbench
+# 🎯 StatFormBench
 
 **[English](README.md)** | [中文](README_zh.md)
 
-## Dataset Overview
+## 🔍 Dataset Overview
 
-statformbench is a benchmark dataset designed to evaluate the ability of Large Language Models (LLMs) in **Statistical Problem Formulation**. This benchmark provides a comprehensive framework for assessing how well LLMs can understand and formulate statistical analysis problems from natural language descriptions.
+StatFormBench is a benchmark dataset designed to evaluate the ability of Large Language Models (LLMs) in **Statistical Problem Formulation**. This benchmark provides a comprehensive framework for assessing how well LLMs can understand and formulate statistical analysis problems from natural language descriptions.
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 statformbench/
@@ -29,7 +29,7 @@ statformbench/
 └── README.md             # This file
 ```
 
-## Installation
+## ⚙️ Installation
 
 Install the required Python dependencies:
 
@@ -37,9 +37,9 @@ Install the required Python dependencies:
 pip install -r requirements.txt
 ```
 
-## Configuration
+## 🔧 Configuration
 
-### 1. API Configuration
+### 🔑 1. API Configuration
 
 Configure your API credentials in [`api_info.py`](api_info.py):
 
@@ -48,7 +48,7 @@ api_key = "your_api_key_here"
 base_url = "your_base_url_here"
 ```
 
-### 2. Model Configuration
+### 🤖 2. Model Configuration
 
 Specify the models to evaluate in [`model_name0.txt`](model_name0.txt). Write **one model ID per line**:
 
@@ -61,9 +61,9 @@ claude-opus-4-6
 
 Each line corresponds to a model that will be tested against all samples in the dataset.
 
-## Usage
+## 🚀 Usage
 
-### Running the Test
+### ▶️ Running the Test
 
 Execute the main script to run the benchmark:
 
@@ -76,7 +76,7 @@ The script will:
 2. For each sample × model combination, call the LLM API
 3. Save results to the `results/` directory (both `.pkl` and `.csv` formats)
 
-### Running the Evaluation
+### 📊 Running the Evaluation
 
 Evaluation is performed by running the [`evaluation/evaluate_combined.py`](evaluation/evaluate_combined.py) script, which loads the model outputs (PKL file) and computes the evaluation metrics against the ground truth in `statformbench.pkl`.
 
@@ -89,28 +89,28 @@ python evaluation/evaluate_combined.py [optional: pkl_path]
 - **Output**: evaluation results are saved as a CSV file to the `evaluation/evaluation_results/` directory. The output filename is derived from the input PKL name with an `_evaluated` suffix (e.g., `all_models_result_other_evaluated.csv`).
 - **Workflow**: the script reads each sample, looks up the corresponding ground-truth answer from `statformbench.pkl`, computes the metrics (JCV, PV, RV, ACC@1st, ACC@2nd, VRI), and writes the annotated results to CSV.
 
-### Evaluation Metrics
+### 📏 Evaluation Metrics
 
 | Metric | Description |
 |--------|-------------|
 | JCV | Jaccard Coefficient - measures variable set similarity |
 | PV | Precision - proportion of predicted variables that are correct |
 | RV | Recall - proportion of correct variables that are predicted |
-| $ACC_{CG}$ | Method accuracy with relaxed matching |
-| $ACC_{FG}$ | Method accuracy with strict exact matching |
+| $ACC_{CG}$ | Coarse-grained accuracy |
+| $ACC_{FG}$ | Fine-grained accuracy |
 | VRI | Variable Role Consistency - matching variable roles |
 
-## License
+## 📜 License
 
 This project is intended for research purposes. Please refer to the original dataset license for usage restrictions.
 
-## Citation
+## 📝 Citation
 
-If statformbench helps your research or work, please consider citing it:
+If StatFormBench helps your research or work, please consider citing it:
 
 ```bibtex
-@misc{statformbench,
-  title = {statformbench: A Benchmark for Statistical Problem Formulation with LLMs},
+@misc{statformbenchbench, 
+  title = {StatFormBench: A Benchmark for Statistical Problem Formulation with LLMs},
   author = {Your Name},
   year = {2024},
   url = {https://github.com/yourusername/statformbench},
