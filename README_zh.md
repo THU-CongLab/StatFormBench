@@ -14,7 +14,6 @@
   <strong><a href="https://huggingface.co/datasets/THU-CongLab/StatFormBench">数据集</a></strong> ·
   <strong><a href="https://arxiv.org/abs/XXXX.XXXXX">论文</a></strong> ·
   <strong><a href="#-使用方法">快速开始</a></strong> ·
-  <strong><a href="#-评估指标">评估结果</a></strong> ·
   <strong><a href="#-许可证">许可证</a></strong>
 </p>
 
