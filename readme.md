@@ -145,3 +145,13 @@ If StatFormBench helps your research or work, please consider citing it:
   note = {GitHub repository, accessed 2024}
 }
 ```
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=THU-CongLab%2FStatFormBench&type=date&legend=bottom-right">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=THU-CongLab/StatFormBench&type=date&theme=dark&legend=bottom-right&sealed_token=5v0XpqbwEHKIpBsEtMKK-zSDza_VtI6xCwUQ7HrMqUWovCH0LW9gvvKMARcsKFtqQXMkhjncLlgHSH5UILeCln4AaZZAiZ5xpV9hNRdQwZ37_xW1DvT1cQ" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=THU-CongLab/StatFormBench&type=date&legend=bottom-right&sealed_token=5v0XpqbwEHKIpBsEtMKK-zSDza_VtI6xCwUQ7HrMqUWovCH0LW9gvvKMARcsKFtqQXMkhjncLlgHSH5UILeCln4AaZZAiZ5xpV9hNRdQwZ37_xW1DvT1cQ" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=THU-CongLab/StatFormBench&type=date&legend=bottom-right&sealed_token=5v0XpqbwEHKIpBsEtMKK-zSDza_VtI6xCwUQ7HrMqUWovCH0LW9gvvKMARcsKFtqQXMkhjncLlgHSH5UILeCln4AaZZAiZ5xpV9hNRdQwZ37_xW1DvT1cQ" />
+ </picture>
+</a>
