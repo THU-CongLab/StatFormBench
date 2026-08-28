@@ -3,6 +3,10 @@
 **[English](README.md)** | [中文](README_zh.md)
 
 <p align="center">
+  <strong>Benchmarking Language Models for Statistical Problem Formulation</strong>
+</p>
+
+<p align="center">
   <a href="#-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python 3.10+"></a>
   <!-- TODO: Replace XXXX.XXXXX with the actual arXiv ID -->
