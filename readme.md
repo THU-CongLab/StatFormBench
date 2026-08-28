@@ -14,7 +14,6 @@
   <strong><a href="https://huggingface.co/datasets/THU-CongLab/StatFormBench">Dataset</a></strong> ·
   <strong><a href="https://arxiv.org/abs/XXXX.XXXXX">Paper</a></strong> ·
   <strong><a href="#-usage">Quick Start</a></strong> ·
-  <strong><a href="#-evaluation-metrics">Results</a></strong> ·
   <strong><a href="#-license">License</a></strong>
 </p>
 
