@@ -4,7 +4,9 @@
   <strong>Benchmarking Language Models for Statistical Problem Formulation</strong>
 </p>
 
-[English](README.md) | **[中文](README_zh.md)**
+<p align="center">
+  <a href="README.md">English</a> | <a href="README_zh.md"><strong>中文</strong></a>
+</p>
 
 <p align="center">
   <a href="#-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
