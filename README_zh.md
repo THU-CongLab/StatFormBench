@@ -2,6 +2,22 @@
 
 [English](README.md) | **[中文](README_zh.md)**
 
+<p align="center">
+  <a href="#-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python 3.10+"></a>
+  <!-- TODO: 将 XXXX.XXXXX 替换为实际的 arXiv 编号 -->
+  <a href="https://arxiv.org/abs/XXXX.XXXXX"><img src="https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg?logo=arxiv&logoColor=white" alt="arXiv paper"></a>
+  <a href="https://huggingface.co/datasets/THU-CongLab/StatFormBench"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-FFD21E" alt="Hugging Face Dataset"></a>
+</p>
+
+<p align="center">
+  <strong><a href="https://huggingface.co/datasets/THU-CongLab/StatFormBench">数据集</a></strong> ·
+  <strong><a href="https://arxiv.org/abs/XXXX.XXXXX">论文</a></strong> ·
+  <strong><a href="#-使用方法">快速开始</a></strong> ·
+  <strong><a href="#-评估指标">评估结果</a></strong> ·
+  <strong><a href="#-许可证">许可证</a></strong>
+</p>
+
 ## 🔍 数据集概述
 
 StatFormBench 是一个用于评估大语言模型（LLM）在**统计问题形式化（Statistical Problem Formulation）**能力的基准数据集。该基准提供了一个综合框架，用于评估 LLM 从自然语言描述中理解和形式化统计分析问题的能力。

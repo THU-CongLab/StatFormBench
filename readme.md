@@ -2,6 +2,22 @@
 
 **[English](README.md)** | [中文](README_zh.md)
 
+<p align="center">
+  <a href="#-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python 3.10+"></a>
+  <!-- TODO: Replace XXXX.XXXXX with the actual arXiv ID -->
+  <a href="https://arxiv.org/abs/XXXX.XXXXX"><img src="https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg?logo=arxiv&logoColor=white" alt="arXiv paper"></a>
+  <a href="https://huggingface.co/datasets/THU-CongLab/StatFormBench"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-FFD21E" alt="Hugging Face Dataset"></a>
+</p>
+
+<p align="center">
+  <strong><a href="https://huggingface.co/datasets/THU-CongLab/StatFormBench">Dataset</a></strong> ·
+  <strong><a href="https://arxiv.org/abs/XXXX.XXXXX">Paper</a></strong> ·
+  <strong><a href="#-usage">Quick Start</a></strong> ·
+  <strong><a href="#-evaluation-metrics">Results</a></strong> ·
+  <strong><a href="#-license">License</a></strong>
+</p>
+
 ## 🔍 Dataset Overview
 
 StatFormBench is a benchmark dataset designed to evaluate the ability of Large Language Models (LLMs) in **Statistical Problem Formulation**. This benchmark provides a comprehensive framework for assessing how well LLMs can understand and formulate statistical analysis problems from natural language descriptions.
