@@ -10,23 +10,30 @@ StatFormBench is a benchmark dataset designed to evaluate the ability of Large L
 
 ```
 statformbench/
-├── evaluation/          # Evaluation scripts and modules
-│   ├── evaluate_combined.py   # Main evaluation script
-│   ├── test_0.py              # Case evaluation module
-│   ├── var.py                 # Variable comparison utilities
-│   ├── compare_methods.py     # Method comparison functions
-│   ├── extract_last_json_safe.py  # JSON extraction utilities
-│   ├── auto_evaluate.py       # Automated evaluation workflow
-│   ├── auto_m0.py             # Model evaluation helper
-│   └── role.py                # Role analysis module
-├── results/             # Results storage
-├── statformbench.pkl     # Main dataset file (pickle format)
-├── statformbench.json    # Dataset in JSON format
-├── api_info.py           # API configuration (key & base_url)
-├── model_name0.txt       # Model IDs (one per line)
-├── run.py                # Main execution script
-├── sta.csv               # Supplementary data for Classification
-└── README.md             # This file
+├── config/                       # Configuration files
+│   ├── api_config.py             # API configuration (key & base_url)
+│   └── models.txt                # Model IDs (one per line)
+├── data/                         # Dataset and reference data
+│   ├── statformbench.json        # Dataset in JSON format
+│   ├── statformbench.pkl         # Main dataset file (pickle format, ground truth)
+│   └── method_hierarchy.csv      # Method hierarchy mapping for classification
+├── prompts/                      # LLM prompt definitions
+│   └── prompts.py                # Prompt templates (Prompt_book, Prompt_case)
+├── src/                          # Source code
+│   ├── run_benchmark.py          # Main execution script
+│   └── evaluation/               # Evaluation scripts and modules
+│       ├── evaluate_combined.py  # Main evaluation script
+│       ├── evaluate_case.py      # Case evaluation module
+│       ├── variable_metrics.py   # Variable comparison metrics (Jaccard, PV, RV)
+│       ├── compare_methods.py     # Method comparison functions
+│       ├── json_utils.py         # JSON extraction utilities
+│       ├── llm_evaluate.py       # LLM-based automated evaluation workflow
+│       ├── llm_evaluator.py      # LLM model evaluation helper
+│       └── role_accuracy.py      # Variable role accuracy module
+├── results/                      # Benchmark output storage (model outputs)
+├── evaluation_results/           # Evaluation output storage (evaluation scores)
+├── requirements.txt              # Python dependencies
+└── README.md                     # This file
 ```
 
 ## ⚙️ Installation
@@ -41,7 +48,7 @@ pip install -r requirements.txt
 
 ### 🔑 1. API Configuration
 
-Configure your API credentials in [`api_info.py`](api_info.py):
+Configure your API credentials in [`config/api_config.py`](config/api_config.py):
 
 ```python
 api_key = "your_api_key_here"
@@ -50,7 +57,7 @@ base_url = "your_base_url_here"
 
 ### 🤖 2. Model Configuration
 
-Specify the models to evaluate in [`model_name0.txt`](model_name0.txt). Write **one model ID per line**:
+Specify the models to evaluate in [`config/models.txt`](config/models.txt). Write **one model ID per line**:
 
 ```
 gemini-3.1-pro-preview
@@ -68,26 +75,26 @@ Each line corresponds to a model that will be tested against all samples in the 
 Execute the main script to run the benchmark:
 
 ```bash
-python run.py
+python src/run_benchmark.py
 ```
 
 The script will:
-1. Load samples from `statformbench.json`
+1. Load samples from `data/statformbench.json`
 2. For each sample × model combination, call the LLM API
 3. Save results to the `results/` directory (both `.pkl` and `.csv` formats)
 
 ### 📊 Running the Evaluation
 
-Evaluation is performed by running the [`evaluation/evaluate_combined.py`](evaluation/evaluate_combined.py) script, which loads the model outputs (PKL file) and computes the evaluation metrics against the ground truth in `statformbench.pkl`.
+Evaluation is performed by running the [`src/evaluation/evaluate_combined.py`](src/evaluation/evaluate_combined.py) script, which loads the model outputs (PKL file) and computes the evaluation metrics against the ground truth in `data/statformbench.pkl`.
 
 ```bash
-python evaluation/evaluate_combined.py [optional: pkl_path]
+python src/evaluation/evaluate_combined.py [optional: pkl_path]
 ```
 
-- **Script path**: `evaluation/evaluate_combined.py`
-- **Input**: a PKL file containing model outputs (produced by `run.py`). If no `pkl_path` argument is provided, the script defaults to `results/all_models_result_other.pkl`.
-- **Output**: evaluation results are saved as a CSV file to the `evaluation/evaluation_results/` directory. The output filename is derived from the input PKL name with an `_evaluated` suffix (e.g., `all_models_result_other_evaluated.csv`).
-- **Workflow**: the script reads each sample, looks up the corresponding ground-truth answer from `statformbench.pkl`, computes the metrics (JCV, PV, RV, $ACC_{CG}$, $ACC_{FG}$, VRI), and writes the annotated results to CSV.
+- **Script path**: `src/evaluation/evaluate_combined.py`
+- **Input**: a PKL file containing model outputs (produced by `src/run_benchmark.py`). If no `pkl_path` argument is provided, the script defaults to `results/all_models_result_other.pkl`.
+- **Output**: evaluation results are saved as a CSV file to the `evaluation_results/` directory. The output filename is derived from the input PKL name with an `_evaluated` suffix (e.g., `all_models_result_other_evaluated.csv`).
+- **Workflow**: the script reads each sample, looks up the corresponding ground-truth answer from `data/statformbench.pkl`, computes the metrics (JCV, PV, RV, $ACC_{CG}$, $ACC_{FG}$, VRI), and writes the annotated results to CSV.
 
 ### 📏 Evaluation Metrics
 

@@ -4,34 +4,78 @@ import pickle
 import pandas as pd
 import time
 import os
+import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from prompt import Prompt_book, Prompt_case
-from api_info import api_key, base_url
+
+# Add project root to sys.path to import config / prompts packages
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, PROJECT_ROOT)
+
+from prompts.prompts import Prompt_book, Prompt_case
+from config.api_config import api_key, base_url
 
 
 # ============================================
-# 路径配置 - 统一管理所有文件路径
+# Path configuration - centralized file path management
 # ============================================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-INPUT_DATA_FILE = os.path.join(BASE_DIR, 'statformbench.json')
-MODEL_NAME_FILE = os.path.join(BASE_DIR, 'model_name0.txt')
-OUTPUT_DIR = os.path.join(BASE_DIR, 'results')
+DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
+INPUT_DATA_FILE = os.path.join(DATA_DIR, 'statformbench.json')
+MODEL_NAME_FILE = os.path.join(PROJECT_ROOT, 'config', 'models.txt')
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'results')
 
-# 输出文件路径
+# Output file path
 RESULT_FILE_BASE = 'all_models_result_other'
 
-# 并发数设置
+# Concurrency settings
 MAX_WORKERS = 10
+
+# HuggingFace dataset repository
+HF_REPO_ID = "THU-CongLab/StatFormBench"
+HF_DATASET_FILES = ['statformbench.json', 'statformbench.pkl']
+
+
+def ensure_dataset_files():
+    """Download dataset files from HuggingFace if they are not present locally"""
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    missing_files = [f for f in HF_DATASET_FILES if not os.path.exists(os.path.join(DATA_DIR, f))]
+
+    if not missing_files:
+        print(f"Dataset files already exist in: {DATA_DIR}")
+        return
+
+    print(f"Missing dataset files: {missing_files}")
+    print(f"Downloading from HuggingFace: https://huggingface.co/datasets/{HF_REPO_ID}")
+
+    try:
+        from huggingface_hub import hf_hub_download
+    except ImportError:
+        raise ImportError(
+            "huggingface_hub is required to download dataset files. "
+            "Install it with: pip install huggingface_hub"
+        )
+
+    for filename in missing_files:
+        print(f"  Downloading {filename} ...")
+        downloaded_path = hf_hub_download(
+            repo_id=HF_REPO_ID,
+            filename=filename,
+            repo_type="dataset",
+            local_dir=DATA_DIR,
+        )
+        print(f"  Saved to: {downloaded_path}")
+
+    print("Dataset files ready.")
 
 
 def ensure_result_dir():
-    """确保结果保存目录存在"""
+    """Ensure the output directory exists"""
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    print(f"结果将保存到: {os.path.abspath(OUTPUT_DIR)}")
+    print(f"Results will be saved to: {os.path.abspath(OUTPUT_DIR)}")
 
 
 def remove_error_rows():
-    """删除输出CSV中所有错误行"""
+    """Remove all error rows from the output CSV"""
     combined_csv = get_output_path(f"{RESULT_FILE_BASE}.csv")
     if os.path.exists(combined_csv):
         df = pd.read_csv(combined_csv)
@@ -41,27 +85,27 @@ def remove_error_rows():
         removed_count = before_count - after_count
         if removed_count > 0:
             df_filtered.to_csv(combined_csv, index=False, encoding='utf-8-sig')
-            print(f"已删除 {removed_count} 条错误记录，剩余 {after_count} 条有效记录")
+            print(f"Removed {removed_count} error records, {after_count} valid records remaining")
         else:
-            print("未发现错误记录，无需删除")
+            print("No error records found, nothing to remove")
     else:
-        print("结果文件不存在，无需删除错误行")
+        print("Result file does not exist, no error rows to remove")
 
 
 def get_output_path(filename):
-    """获取输出文件的完整路径"""
+    """Get the full path of an output file"""
     return os.path.join(OUTPUT_DIR, filename)
 
 
 def read_model_names():
-    """读取model_name.txt文件中的模型名称"""
+    """Read model names from models.txt"""
     with open(MODEL_NAME_FILE, 'r', encoding='utf-8') as f:
         model_names = [line.strip() for line in f if line.strip()]
     return model_names
 
 
 def process_data_description(data_description):
-    """处理data_description_2字段，仅保留关键信息"""
+    """Process the data_description_2 field, keeping only key information"""
     if not data_description:
         return data_description
 
@@ -69,7 +113,7 @@ def process_data_description(data_description):
 
 
 def abstract_statistical_problem(input_data, model_name="gpt-4o", source="book"):
-    """调用大模型API抽象统计问题"""
+    """Call LLM API to abstract statistical problems"""
     if source == "case":
         prompt = f"{Prompt_case}\n\nquestion：\n{json.dumps(input_data, ensure_ascii=False, indent=2)}\n\nPlease output the data in the required JSON format."
     else:
@@ -116,7 +160,7 @@ def abstract_statistical_problem(input_data, model_name="gpt-4o", source="book")
 
 
 def process_sample_for_model(sample_key, sample_data, model_name):
-    """为单个样本和模型处理数据"""
+    """Process data for a single sample and model"""
     input_data = sample_data['input']
     source = sample_data.get('source', 'book')
 
@@ -146,7 +190,7 @@ def process_sample_for_model(sample_key, sample_data, model_name):
 
 
 def load_existing_results():
-    """加载已存在的结果，用于判断哪些样本已经处理过"""
+    """Load existing results to determine which samples have already been processed"""
     combined_csv = get_output_path(f"{RESULT_FILE_BASE}.csv")
 
     if os.path.exists(combined_csv):
@@ -160,18 +204,18 @@ def load_existing_results():
                     processed.add((sample_key, model_name))
                 except:
                     pass
-            print(f"已加载 {len(processed)} 条已处理记录")
+            print(f"Loaded {len(processed)} processed records")
             return processed
         except:
-            print("加载已存在结果失败，将重新处理所有样本")
+            print("Failed to load existing results, will reprocess all samples")
             return set()
     else:
-        print("未找到已存在的结果文件，将处理所有样本")
+        print("No existing result file found, will process all samples")
         return set()
 
 
 def save_results(results, is_final=False):
-    """保存结果到文件"""
+    """Save results to file"""
     if not results:
         return
 
@@ -189,8 +233,8 @@ def save_results(results, is_final=False):
     combined_df.to_pickle(combined_pkl)
     combined_df.to_csv(combined_csv, index=False, encoding='utf-8-sig')
 
-    print(f"\n已保存 {len(df)} 条记录到 {combined_csv}")
-    print(f"当前总记录数: {len(combined_df)}")
+    print(f"\nSaved {len(df)} records to {combined_csv}")
+    print(f"Current total records: {len(combined_df)}")
 
     if is_final:
         model_names = df['model_name'].unique()
@@ -203,15 +247,15 @@ def save_results(results, is_final=False):
                 model_df.to_pickle(filename)
                 model_df.to_csv(filename.replace('.pkl', '.csv'), index=False, encoding='utf-8-sig')
 
-                print(f"模型 {model_name} 结果已保存到 {filename}")
+                print(f"Model {model_name} results saved to {filename}")
 
 
 def process_all_samples_parallel():
-    """并行处理所有样本和模型"""
+    """Process all samples and models in parallel"""
     ensure_result_dir()
     processed = load_existing_results()
 
-    print(f"读取输入文件: {INPUT_DATA_FILE}")
+    print(f"Reading input file: {INPUT_DATA_FILE}")
     with open(INPUT_DATA_FILE, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
@@ -223,9 +267,9 @@ def process_all_samples_parallel():
             if (str(sample_key), model_name) not in processed:
                 tasks.append((sample_key, sample_data, model_name))
 
-    print(f"开始并行处理: {len(tasks)} 个待处理任务")
-    print(f"模型列表: {model_names}")
-    print(f"并发数: {MAX_WORKERS}")
+    print(f"Starting parallel processing: {len(tasks)} tasks to process")
+    print(f"Model list: {model_names}")
+    print(f"Concurrency: {MAX_WORKERS}")
 
     results = []
     batch_size = 10
@@ -248,14 +292,14 @@ def process_all_samples_parallel():
                 results.append(result)
                 completed_tasks += 1
 
-                print(f"进度: {completed_tasks}/{total_tasks} - 样本 {sample_key} - 模型 {model_name} - 完成")
+                print(f"Progress: {completed_tasks}/{total_tasks} - sample {sample_key} - model {model_name} - completed")
 
                 if len(results) >= batch_size:
                     save_results(results, is_final=False)
                     results = []
 
             except Exception as e:
-                print(f"进度: {completed_tasks}/{total_tasks} - 样本 {sample_key} - 模型 {model_name} - 错误: {e}")
+                print(f"Progress: {completed_tasks}/{total_tasks} - sample {sample_key} - model {model_name} - error: {e}")
 
                 error_result = {
                     'sample_key': sample_key,
@@ -277,26 +321,26 @@ def process_all_samples_parallel():
     if results:
         save_results(results, is_final=True)
 
-    print(f"\n处理完成！")
-    print(f"总共处理了 {completed_tasks} 条记录")
+    print(f"\nProcessing complete!")
+    print(f"Total processed {completed_tasks} records")
 
     combined_csv = get_output_path(f"{RESULT_FILE_BASE}.csv")
     if os.path.exists(combined_csv):
         df = pd.read_csv(combined_csv)
-        print(f"最终总记录数: {len(df)}")
+        print(f"Final total records: {len(df)}")
         return df
     else:
         return None
 
 
 def process_model_sequentially(model_name):
-    """顺序处理单个模型的所有样本"""
+    """Process all samples for a single model sequentially"""
     ensure_result_dir()
 
-    print(f"\n开始处理模型: {model_name}")
+    print(f"\nStarting processing model: {model_name}")
     processed = load_existing_results()
 
-    print(f"读取输入文件: {INPUT_DATA_FILE}")
+    print(f"Reading input file: {INPUT_DATA_FILE}")
     with open(INPUT_DATA_FILE, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
@@ -305,13 +349,13 @@ def process_model_sequentially(model_name):
         if (str(sample_key), model_name) not in processed:
             tasks.append((sample_key, sample_data))
 
-    print(f"待处理任务数: {len(tasks)}")
+    print(f"Tasks to process: {len(tasks)}")
 
     results = []
     batch_size = 10
 
     for i, (sample_key, sample_data) in enumerate(tasks):
-        print(f"  进度: {i+1}/{len(tasks)} - 样本 {sample_key}")
+        print(f"  Progress: {i+1}/{len(tasks)} - sample {sample_key}")
 
         result = process_sample_for_model(sample_key, sample_data, model_name)
         results.append(result)
@@ -336,7 +380,7 @@ def process_model_sequentially(model_name):
             model_df.to_pickle(filename)
             model_df.to_csv(filename.replace('.pkl', '.csv'), index=False, encoding='utf-8-sig')
 
-            print(f"模型 {model_name} 处理完成！结果已保存到 {filename}")
+            print(f"Model {model_name} processing complete! Results saved to {filename}")
             return model_df
 
     return None
@@ -344,35 +388,37 @@ def process_model_sequentially(model_name):
 
 if __name__ == "__main__":
     print("=" * 50)
-    print("路径配置:")
-    print(f"  基础目录: {BASE_DIR}")
-    print(f"  输出目录: {OUTPUT_DIR}")
-    print(f"  输入文件: {INPUT_DATA_FILE}")
-    print(f"  模型列表: {MODEL_NAME_FILE}")
+    print("Path configuration:")
+    print(f"  Base directory: {PROJECT_ROOT}")
+    print(f"  Output directory: {OUTPUT_DIR}")
+    print(f"  Input file: {INPUT_DATA_FILE}")
+    print(f"  Model list: {MODEL_NAME_FILE}")
     print("=" * 50)
+
+    ensure_dataset_files()
 
     remove_error_rows()
 
     df = process_all_samples_parallel()
 
     if df is not None:
-        print("\n结果摘要:")
-        print(f"总记录数: {len(df)}")
-        print(f"模型数量: {df['model_name'].nunique()}")
-        print(f"样本数量: {df['sample_key'].nunique()}")
+        print("\nResult summary:")
+        print(f"Total records: {len(df)}")
+        print(f"Number of models: {df['model_name'].nunique()}")
+        print(f"Number of samples: {df['sample_key'].nunique()}")
 
         if 'prompt_tokens' in df.columns and 'completion_tokens' in df.columns:
             total_prompt = df['prompt_tokens'].sum()
             total_completion = df['completion_tokens'].sum()
             total_tokens = total_prompt + total_completion
-            print(f"\nToken使用统计:")
-            print(f"总Prompt Tokens: {total_prompt}")
-            print(f"总Completion Tokens: {total_completion}")
-            print(f"总Tokens: {total_tokens}")
+            print(f"\nToken usage statistics:")
+            print(f"Total Prompt Tokens: {total_prompt}")
+            print(f"Total Completion Tokens: {total_completion}")
+            print(f"Total Tokens: {total_tokens}")
 
-        print("\n前3条记录:")
+        print("\nFirst 3 records:")
         print(df.head(3))
 
-        print("\n数据框结构:")
-        print(f"列名: {df.columns.tolist()}")
-        print(f"形状: {df.shape}")
+        print("\nDataFrame structure:")
+        print(f"Columns: {df.columns.tolist()}")
+        print(f"Shape: {df.shape}")

@@ -4,19 +4,19 @@ from typing import Optional, Dict, Any
 
 def extract_last_json_safe(text: str) -> Optional[Dict[str, Any]]:
     """
-    安全地从文本中提取最后一个JSON对象并解析为字典
-    
-    参数:
-        text: 包含JSON的文本字符串
-    
-    返回:
-        解析后的字典，如果没有找到有效的JSON则返回None
+    Safely extract the last JSON object from text and parse it into a dictionary
+
+    Args:
+        text: text string containing JSON
+
+    Returns:
+        parsed dictionary, or None if no valid JSON found
     """
     if not text or not isinstance(text, str):
         return None
     
-    # 尝试多种提取策略
-    # 策略2（括号匹配）优先：能正确提取外层完整JSON对象，避免误提取嵌套内部对象
+    # Try multiple extraction strategies
+    # Strategy 2 (bracket matching) takes priority: correctly extracts the outer complete JSON object, avoiding mistakenly extracting nested inner objects
     strategies = [
         _extract_by_brace_matching,
         _extract_by_regex,
@@ -34,8 +34,8 @@ def extract_last_json_safe(text: str) -> Optional[Dict[str, Any]]:
     return None
 
 def _extract_by_regex(text: str) -> Optional[Dict]:
-    """策略1：使用正则表达式"""
-    # 匹配简单的JSON对象
+    """Strategy 1: Use regex"""
+    # Match simple JSON objects
     pattern = r'\{(?:[^{}]|(?:\{[^{}]*\}))*\}'
     matches = re.findall(pattern, text)
     
@@ -47,7 +47,7 @@ def _extract_by_regex(text: str) -> Optional[Dict]:
     return None
 
 def _extract_by_brace_matching(text: str) -> Optional[Dict]:
-    """策略2：括号匹配法"""
+    """Strategy 2: Bracket matching method"""
     json_strings = []
     i = 0
     length = len(text)
@@ -80,7 +80,7 @@ def _extract_by_brace_matching(text: str) -> Optional[Dict]:
     return None
 
 def _extract_by_find_last_brace(text: str) -> Optional[Dict]:
-    """策略3：查找最后一个左括号"""
+    """Strategy 3: Find the last opening brace"""
     last_open = text.rfind('{')
     if last_open == -1:
         return None
@@ -103,25 +103,25 @@ def _extract_by_find_last_brace(text: str) -> Optional[Dict]:
     
     return None
 
-# 使用示例
+# Usage example
 if __name__ == "__main__":
     test_text = """
-    用户：你好
-    系统：{"response": "你好，有什么可以帮助你的？"}
-    用户：查询天气
-    系统：{
+    User: Hello
+    System: {"response": "Hello, how can I help you?"}
+    User: Query weather
+    System: {
         "action": "weather_query",
         "params": {
-            "city": "北京",
+            "city": "Beijing",
             "date": "2024-01-01"
         },
         "status": "success"
     }
     """
-    
+
     result = extract_last_json_safe(test_text)
     if result:
-        print("成功提取最后一个JSON段落：")
+        print("Successfully extracted the last JSON segment:")
         print(json.dumps(result, ensure_ascii=False, indent=2))
     else:
-        print("未找到有效的JSON段落")
+        print("No valid JSON segment found")

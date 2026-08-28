@@ -5,19 +5,19 @@ import os
 import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-# 添加评估模块路径
+# Add evaluation module path
 sys.path.append(os.path.dirname(__file__))
 
-# 导入评估相关模块
-from test_0 import evaluate_0
-from var import jaccard_coefficient, calculate_ratio_set
-from extract_last_json_safe import extract_last_json_safe
+# Import evaluation-related modules
+from evaluate_case import evaluate_0
+from variable_metrics import jaccard_coefficient, calculate_ratio_set
+from json_utils import extract_last_json_safe
 from compare_methods import compare_methods1
 
 
 def load_combined_data():
-    """加载statformbench.pkl文件，获取标准答案"""
-    data_path = os.path.join(os.path.dirname(__file__), '..', 'statformbench.pkl')
+    """Load statformbench.pkl file to get ground truth answers"""
+    data_path = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'statformbench.pkl')
     with open(data_path, 'rb') as f:
         data = pickle.load(f)
     return data
@@ -29,7 +29,7 @@ def evaluate_case_sample(row, combined_data):
     model_name = row['model_name']
     
     try:
-        # 处理sample_key
+        # Process sample_key
         if pd.isna(sample_key):
             sample_key_str = ''
         elif isinstance(sample_key, (int, float)):
@@ -37,13 +37,13 @@ def evaluate_case_sample(row, combined_data):
         else:
             sample_key_str = str(sample_key)
         
-        # 获取question_description (input_data列)
+        # Get question_description (input_data column)
         question_description = row['input_data']
         
-        # 获取result (output_json列)
+        # Get result (output_json column)
         result = row['output_json']
         
-        # 获取answer (从combined_data中根据sample_key查找)
+        # Get answer (look up from combined_data by sample_key)
         if sample_key_str in combined_data:
             answer_data = combined_data[sample_key_str]
             if isinstance(answer_data, dict):
@@ -98,10 +98,10 @@ def evaluate_case_sample(row, combined_data):
                 'error': f'sample_key {sample_key_str} not found'
             }
         
-        # 调用evaluate_0进行评估
+        # Call evaluate_0 for evaluation
         eval_result = evaluate_0(question_description, result, answer)
         
-        # 处理评估结果
+        # Process evaluation results
         if isinstance(eval_result, list):
             if len(eval_result) >= 7:
                 error_type, variable_score, precision_score, recall_score, method_score2, method_score1, role_score = eval_result
@@ -153,11 +153,11 @@ def evaluate_case_sample(row, combined_data):
 
 
 def evaluate_book_sample(row, combined_data):
-    """评估source为book的样本，使用evaluatebook.py的逻辑"""
+    """Evaluate samples with source='book'"""
     sample_key = row['sample_key']
     output_json_str = row['output_json']
     
-    # 检查output_json是否为字符串
+    # Check if output_json is a string
     if not isinstance(output_json_str, str):
         return {
             'error_type': 'output_not_string',
@@ -170,7 +170,7 @@ def evaluate_book_sample(row, combined_data):
             'error': 'output_json is not string'
         }
     
-    # 检查是否包含错误信息
+    # Check if it contains error message
     if output_json_str.startswith("错误:") or output_json_str.startswith("Error:"):
         return {
             'error_type': 'output_error',
@@ -185,7 +185,7 @@ def evaluate_book_sample(row, combined_data):
 
     output_json = extract_last_json_safe(output_json_str)
 
-    # 检查output_json是否为None
+    # Check if output_json is None
     if output_json is None:
         return {
             'error_type': 'output_empty',
@@ -198,7 +198,7 @@ def evaluate_book_sample(row, combined_data):
             'error': 'output_json is empty'
         }
     
-    # 检查是否有category和variables字段
+    # Check if category and variables fields exist
     if 'category' not in output_json or 'variables' not in output_json:
         return {
             'error_type': 'missing_fields',
@@ -211,11 +211,11 @@ def evaluate_book_sample(row, combined_data):
             'error': 'output_json missing category or variables field'
         }
     
-    # 获取预测的category和variables
+    # Get predicted category and variables
     pred_category = output_json.get('category', '')
     pred_variables = output_json.get('variables', {})
     
-    # 处理sample_key
+    # Process sample_key
     if pd.isna(sample_key):
         sample_key_str = ''
     elif isinstance(sample_key, (int, float)):
@@ -223,7 +223,7 @@ def evaluate_book_sample(row, combined_data):
     else:
         sample_key_str = str(sample_key)
 
-    # 获取标签数据
+    # Get label data
     label_record = combined_data.get(sample_key_str)
     
     if label_record is None:
@@ -238,21 +238,21 @@ def evaluate_book_sample(row, combined_data):
             'error': f'sample_key {sample_key_str} not found'
         }
     
-    # 获取标签的category和variable
-    # 注意：标签数据使用 'variable' (单数)，模型输出使用 'variables' (复数)
+    # Get label category and variable
+    # Note: label data uses 'variable' (singular), model output uses 'variables' (plural)
     label_category = label_record.get('output', {}).get('category', '')
     label_variable = label_record.get('output', {}).get('variable', {})
     
-    # 计算ACC@2nd (精确匹配)
+    # Calculate ACC@2nd (exact match)
     acc_2nd = 1 if pred_category == label_category else 0
     
-    # 计算ACC@1st (使用compare_methods1比较)
+    # Calculate ACC@1st (using compare_methods1)
     try:
         acc_1st = compare_methods1(pred_category, label_category)
     except Exception as e:
         acc_1st = 0
     
-    # 提取value字段用于变量比较
+    # Extract value field for variable comparison
     pred_values = set()
     try:
         for var_key, var_data in pred_variables.items():
@@ -297,25 +297,25 @@ def evaluate_book_sample(row, combined_data):
             'error': f'Error processing label_variable: {e}'
         }
 
-    # 计算JCV（Jaccard系数）
+    # Calculate JCV (Jaccard coefficient)
     try:
         jcv = jaccard_coefficient(pred_values, label_values)
     except Exception as e:
         jcv = 0
 
-    # 计算PV（变量选取的精度）
+    # Calculate PV (precision)
     try:
         pv = calculate_ratio_set(pred_values, label_values)
     except Exception as e:
         pv = 0
 
-    # 计算RV（变量选取的召回）
+    # Calculate RV (recall)
     try:
         rv = calculate_ratio_set(label_values, pred_values)
     except Exception as e:
         rv = 0
 
-    # 计算VRI（变量角色一致性）
+    # Calculate VRI (variable role consistency)
     matching_count = 0
     total_label_vars = len(label_variable)
 
@@ -358,10 +358,10 @@ def evaluate_book_sample(row, combined_data):
 
 
 def evaluate_single_sample(row, combined_data):
-    """评估单个样本，根据source字段选择评估逻辑"""
+    """Evaluate a single sample, selecting logic based on source field"""
     sample_key = row['sample_key']
     
-    # 处理sample_key
+    # Process sample_key
     if pd.isna(sample_key):
         sample_key_str = ''
     elif isinstance(sample_key, (int, float)):
@@ -369,33 +369,33 @@ def evaluate_single_sample(row, combined_data):
     else:
         sample_key_str = str(sample_key)
 
-    # 从combined_data获取source字段
-    source = 'case'  # 默认值
+    # Get source field from combined_data
+    source = 'case'  # default value
     if sample_key_str in combined_data:
         record = combined_data.get(sample_key_str)
         if isinstance(record, dict):
             source = record.get('source', 'case')
     
-    # 根据source字段选择评估逻辑
+    # select evaluation logic based on source field
     if source == 'book':
         return evaluate_book_sample(row, combined_data)
-    else:  # case 或其他
+    else:  # case or other
         return evaluate_case_sample(row, combined_data)
 
 
 def evaluate_csv_results(pkl_path):
-    """评估PKL文件中的每个样本"""
-    # 读取PKL文件
+    """Evaluate each sample in the PKL file"""
+    # Reading PKL file
     df = pd.read_pickle(pkl_path)
     
-    print(f"读取PKL文件: {pkl_path}")
-    print(f"总行数: {len(df)}")
+    print(f"Reading PKL file: {pkl_path}")
+    print(f"Total rows: {len(df)}")
     
-    # 加载标准答案数据
+    # Load ground truth data
     combined_data = load_combined_data()
-    print(f"加载combined_data.pkl完成，共 {len(combined_data)} 条记录")
+    print(f"Loaded combined_data.pkl, total {len(combined_data)} records")
     
-    # 统计source分布
+    # Count source distribution
     source_counts = {'case': 0, 'book': 0, 'unknown': 0}
     for sample_key in df['sample_key']:
         if pd.isna(sample_key):
@@ -418,26 +418,26 @@ def evaluate_csv_results(pkl_path):
         else:
             source_counts['unknown'] += 1
     
-    print(f"\nsource分布统计:")
-    print(f"  case样本数: {source_counts['case']}")
-    print(f"  book样本数: {source_counts['book']}")
-    print(f"  未知样本数: {source_counts['unknown']}")
+    print(f"\nSource distribution statistics:")
+    print(f"  case samples: {source_counts['case']}")
+    print(f"  book samples: {source_counts['book']}")
+    print(f"  unknown samples: {source_counts['unknown']}")
     
-    # 存储评估结果
+    # Store evaluation results
     evaluation_results = [None] * len(df)
     
-    # 设置最大线程数
+    # Set max worker threads
     max_workers = min(1, os.cpu_count() * 2)
-    print(f"\n使用 {max_workers} 个线程进行并行处理")
+    print(f"\nUsing {max_workers} threads for parallel processing")
     
-    # 使用线程池并行处理
+    # Use thread pool for parallel processing
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_idx = {}
         for idx, row in df.iterrows():
             future = executor.submit(evaluate_single_sample, row, combined_data)
             future_to_idx[future] = idx
         
-        # 处理完成的任务
+        # Process completed tasks
         for future in as_completed(future_to_idx):
             idx = future_to_idx[future]
             sample_key = df.loc[idx, 'sample_key']
@@ -448,11 +448,11 @@ def evaluate_csv_results(pkl_path):
                 evaluation_results[idx] = result
                 
                 if result['error'] is None:
-                    print(f"评估完成: 第 {idx+1}/{len(df)} 行 - sample_key={sample_key}, model={model_name}, error_type={result['error_type']}")
+                    print(f"Evaluation complete: row {idx+1}/{len(df)} - sample_key={sample_key}, model={model_name}, error_type={result['error_type']}")
                 else:
-                    print(f"评估失败: 第 {idx+1}/{len(df)} 行 - sample_key={sample_key}, model={model_name}, error={result['error']}")
+                    print(f"Evaluation failed: row {idx+1}/{len(df)} - sample_key={sample_key}, model={model_name}, error={result['error']}")
             except Exception as e:
-                print(f"任务执行失败: 第 {idx+1}/{len(df)} 行 - sample_key={sample_key}, model={model_name}, error={e}")
+                print(f"Task execution failed: row {idx+1}/{len(df)} - sample_key={sample_key}, model={model_name}, error={e}")
                 evaluation_results[idx] = {
                     'error_type': 'task_execution_error',
                     'JCV': 0,
@@ -464,7 +464,7 @@ def evaluate_csv_results(pkl_path):
                     'error': str(e)
                 }
     
-    # 将评估结果转换为DataFrame（过滤掉None值）
+    # Convert evaluation results to DataFrame (filter out None values)
     default_error = {
         'error_type': 'no_result',
         'JCV': 0, 'PV': 0, 'RV': 0,
@@ -474,7 +474,7 @@ def evaluate_csv_results(pkl_path):
     evaluation_results = [r if r is not None else default_error for r in evaluation_results]
     eval_df = pd.DataFrame(evaluation_results)
     
-    # 将评估结果添加到原始DataFrame
+    # Add evaluation results to original DataFrame
     df['error_type'] = eval_df['error_type']
     df['JCV'] = eval_df['JCV']
     df['PV'] = eval_df['PV']
@@ -484,8 +484,8 @@ def evaluate_csv_results(pkl_path):
     df['VRI'] = eval_df['VRI']
     df['evaluation_error'] = eval_df['error']
     
-    # 保存结果到evaluation_results目录
-    output_dir = os.path.join(os.path.dirname(__file__), 'evaluation_results')
+    # Save results to evaluation_results directory
+    output_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'evaluation_results')
     os.makedirs(output_dir, exist_ok=True)
     
     pkl_filename = os.path.basename(pkl_path)
@@ -494,16 +494,16 @@ def evaluate_csv_results(pkl_path):
     
     df.to_csv(output_path, index=False, encoding='utf-8-sig')
     
-    print(f"\n评估完成！结果已保存到: {output_path}")
-    print(f"成功评估: {len(df[df['evaluation_error'].isna()])} 条")
-    print(f"评估失败: {len(df[df['evaluation_error'].notna()])} 条")
+    print(f"\nEvaluation complete! Results saved to: {output_path}")
+    print(f"Successfully evaluated: {len(df[df['evaluation_error'].isna()])} records")
+    print(f"Evaluation failed: {len(df[df['evaluation_error'].notna()])} records")
     
-    # 显示错误类型统计
-    print("\n错误类型统计:")
+    # Show error type statistics
+    print("\nError type statistics:")
     print(df['error_type'].value_counts())
     
-    # 显示评估分数统计（统一字段）
-    print("\n评估分数统计 (JCV, PV, RV, ACC@1st, ACC@2nd, VRI):")
+    # Show evaluation score statistics (unified fields)
+    print("\nEvaluation score statistics (JCV, PV, RV, ACC@1st, ACC@2nd, VRI):")
     valid_df = df[(df['JCV'].notna()) | (df['PV'].notna()) | (df['RV'].notna())]
     if len(valid_df) > 0:
         print(valid_df[['JCV', 'PV', 'RV', 'ACC@2nd', 'ACC@1st', 'VRI']].describe())
@@ -512,24 +512,24 @@ def evaluate_csv_results(pkl_path):
 
 
 if __name__ == "__main__":
-    # 默认评估路径（PKL文件）
-    default_pkl_path = os.path.join(os.path.dirname(__file__), '..', 'results', 'all_models_result_other.pkl')
+    # Default evaluation path (PKL file)
+    default_pkl_path = os.path.join(os.path.dirname(__file__), '..', '..', 'results', 'all_models_result_other.pkl')
     
-    # 检查是否提供了命令行参数
+    # Check if command line argument is provided
     if len(sys.argv) > 1:
         pkl_path = sys.argv[1]
     else:
         pkl_path = default_pkl_path
     
     print("=" * 70)
-    print("综合评估脚本")
+    print("Comprehensive evaluation script")
     print("=" * 70)
-    print(f"评估文件: {pkl_path}")
+    print(f"Evaluation file: {pkl_path}")
     print("=" * 70)
     
-    # 运行评估
+    # Run evaluation
     result_df = evaluate_csv_results(pkl_path)
     
-    # 显示前几条结果
-    print("\n前5条评估结果:")
+    # Show first few results
+    print("\nFirst 5 evaluation results:")
     print(result_df[['sample_key', 'model_name', 'error_type', 'JCV', 'PV', 'RV', 'ACC@2nd', 'ACC@1st', 'VRI']].head())

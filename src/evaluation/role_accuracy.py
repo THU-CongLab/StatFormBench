@@ -3,31 +3,31 @@ def dict_to_list(data):
 
 def calculate_role_accuracy(answer, result):
     """
-    计算answer["variable"]各变量对应角色（answer["role"]）在result中被判断正确的比例
-    
+    Calculate the proportion of correct role judgments for answer["variable"] variables (answer["role"]) in result
+
     Args:
-        answer (dict): 包含正确答案的字典，包含role字段
-        result (dict): 模型预测结果的字典，包含role字段
-    
+        answer (dict): dict containing correct answers, includes role field
+        result (dict): dict of model prediction results, includes role field
+
     Returns:
-        float: 角色判断的正确率，范围0-1
+        float: role accuracy, range 0-1
     """
-    # 检查answer和result是否都包含role字段
+    # Check if both answer and result contain role field
     if "role" not in answer or "role" not in result:
         return 0.0
-    
+
     answer_role = answer.get("role", {})
     result_role = result.get("role", {})
-    
-    # 情况1：如果answer["role"]和result["role"]均为空字典，则视为全部判断正确
+
+    # Case 1: if both answer["role"] and result["role"] are empty dicts, consider all correct
     if not answer_role and not result_role:
         return 1.0
-    
-    # 情况2：如果result["role"]不为空但answer["role"]为空视为全部判断错误
+
+    # Case 2: if result["role"] is not empty but answer["role"] is empty, consider all incorrect
     if result_role and not answer_role:
         return 0.0
-    
-    # 情况3：正常计算正确率
+
+    # Case 3: calculate accuracy normally
     total_variables = 0
     correct_roles = 0
 
@@ -45,8 +45,8 @@ def calculate_role_accuracy(answer, result):
             idx=result_v.index(answer_v[i])
             if r == result_r[idx]:
                 correct_roles += 1
-    
-    # 计算正确率
+
+    # Calculate accuracy
     if total_variables == 0:
         return 1.0
     else:
@@ -55,19 +55,19 @@ def calculate_role_accuracy(answer, result):
 
 def test_role_accuracy():
     """
-    测试角色判断正确率计算函数
+    Test role accuracy calculation function
     """
-    # 测试用例1：两者都为空字典
+    # Test case 1: both empty dicts
     answer1 = {"role": {}, "variable": {}}
     result1 = {"role": {}, "variable": {}}
-    print(f"测试用例1（均为空字典）: {calculate_role_accuracy(answer1, result1)}")
-    
-    # 测试用例2：result不为空但answer为空
+    print(f"Test case 1 (both empty dicts): {calculate_role_accuracy(answer1, result1)}")
+
+    # Test case 2: result not empty but answer empty
     answer2 = {"role": {}, "variable": {"LLM.pkl": ["Text", "Label"]}}
     result2 = {"role": {"LLM.pkl": ["independent", "dependent"]}, "variable": {"LLM.pkl": ["Text", "Label"]}}
-    print(f"测试用例2（result不为空但answer为空）: {calculate_role_accuracy(answer2, result2)}")
-    
-    # 测试用例3：全部正确
+    print(f"Test case 2 (result not empty but answer empty): {calculate_role_accuracy(answer2, result2)}")
+
+    # Test case 3: all correct
     answer3 = {
         "role": {"LLM.pkl": ["independent", "dependent"],"LLM2.pkl": ["independent", "dependent"]},
         "variable": {"LLM.pkl": ["Text", "Label"],"LLM2.pkl": ["A", "B"]}
@@ -76,9 +76,9 @@ def test_role_accuracy():
         "role": {"LLM.pkl": ["independent", "dependent"],"LLM2.pkl": ["independent", "dependent"]},
         "variable": {"LLM.pkl": ["Text", "Label"],"LLM2.pkl": ["A", "B"]}
     }
-    print(f"测试用例3（全部正确）: {calculate_role_accuracy(answer3, result3)}")
-    
-    # 测试用例4：部分正确
+    print(f"Test case 3 (all correct): {calculate_role_accuracy(answer3, result3)}")
+
+    # Test case 4: partially correct
     answer4 = {
         "role": {"LLM.pkl": ["independent", "dependent"]},
         "variable": {"LLM.pkl": ["Text", "Label"]}
@@ -87,9 +87,9 @@ def test_role_accuracy():
         "role": {"LLM.pkl": ["independent", "independent"]},
         "variable": {"LLM.pkl": ["Text", "Label"]}
     }
-    print(f"测试用例4（部分正确）: {calculate_role_accuracy(answer4, result4)}")
-    
-    # 测试用例5：完全错误
+    print(f"Test case 4 (partially correct): {calculate_role_accuracy(answer4, result4)}")
+
+    # Test case 5: all wrong
     answer5 = {
         "role": {"LLM.pkl": ["independent", "dependent"]},
         "variable": {"LLM.pkl": ["Text", "Label"]}
@@ -98,7 +98,7 @@ def test_role_accuracy():
         "role": {"LLM.pkl": ["dependent", "independent"]},
         "variable": {"LLM.pkl": ["Text", "Label"]}
     }
-    print(f"测试用例5（完全错误）: {calculate_role_accuracy(answer5, result5)}")
+    print(f"Test case 5 (all wrong): {calculate_role_accuracy(answer5, result5)}")
 
 
 if __name__ == "__main__":
