@@ -1,10 +1,10 @@
 # 🎯 StatFormBench
 
-**[English](README.md)** | [中文](README_zh.md)
-
 <p align="center">
   <strong>Benchmarking Language Models for Statistical Problem Formulation</strong>
 </p>
+
+**[English](README.md)** | [中文](README_zh.md)
 
 <p align="center">
   <a href="#-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
