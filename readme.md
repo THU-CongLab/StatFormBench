@@ -12,13 +12,13 @@
   <a href="#-license"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
   <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.10+-blue.svg" alt="Python 3.10+"></a>
   <!-- TODO: Replace XXXX.XXXXX with the actual arXiv ID -->
-  <a href="https://arxiv.org/abs/XXXX.XXXXX"><img src="https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg?logo=arxiv&logoColor=white" alt="arXiv paper"></a>
+  <a href="https://arxiv.org/abs/2609.01982"><img src="https://img.shields.io/badge/arXiv-2609.01982-b31b1b.svg?logo=arxiv&logoColor=white" alt="arXiv paper"></a>
   <a href="https://huggingface.co/datasets/THU-CongLab/StatFormBench"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Dataset-FFD21E" alt="Hugging Face Dataset"></a>
 </p>
 
 <p align="center">
   <strong><a href="https://huggingface.co/datasets/THU-CongLab/StatFormBench">Dataset</a></strong> ·
-  <strong><a href="https://arxiv.org/abs/XXXX.XXXXX">Paper</a></strong> ·
+  <strong><a href="https://arxiv.org/abs/2609.01982">Paper</a></strong> ·
   <strong><a href="#-usage">Quick Start</a></strong> ·
   <strong><a href="#-license">License</a></strong>
 </p>
@@ -137,12 +137,14 @@ This project is intended for research purposes. Please refer to the original dat
 If StatFormBench helps your research or work, please consider citing it:
 
 ```bibtex
-@misc{statformbenchbench, 
-  title = {StatFormBench: A Benchmark for Statistical Problem Formulation with LLMs},
-  author = {Your Name},
-  year = {2024},
-  url = {https://github.com/yourusername/statformbench},
-  note = {GitHub repository, accessed 2024}
+@misc{wang2026benchmarkinglanguagemodelsstatistical,
+      title={Benchmarking Language Models for Statistical Problem Formulation}, 
+      author={Chen Wang and Junzhe Zhao and Xin Cong and Wanlu Deng and Ke Deng},
+      year={2026},
+      eprint={2609.01982},
+      archivePrefix={arXiv},
+      primaryClass={cs.AI},
+      url={https://arxiv.org/abs/2609.01982}, 
 }
 ```
 
