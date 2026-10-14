@@ -140,21 +140,10 @@ python src/evaluation/evaluate_combined.py [可选: pkl_path]
 如果 StatFormBench 对您的研究或工作有所帮助，欢迎引用：
 
 ```bibtex
-@misc{statformbenchbench, 
-  title = {StatFormBench: A Benchmark for Statistical Problem Formulation with LLMs},
-  author = {Your Name},
-  year = {2024},
-  url = {https://github.com/yourusername/statformbench},
-  note = {GitHub repository, accessed 2024}
+@inproceedings{wang2026benchmarkinglanguagemodelsstatistical,
+      title={Benchmarking Language Models for Statistical Problem Formulation}, 
+      author={Chen Wang and Junzhe Zhao and Xin Cong and Wanlu Deng and Ke Deng},
+      booktitle = {Proceedings of the 2026 Conference on Empirical Methods in Natural Language Processing},
+      year={2026},
 }
 ```
-
-## 收藏历史
-
-<a href="https://www.star-history.com/?repos=THU-CongLab%2FStatFormBench&type=date&legend=bottom-right">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=THU-CongLab/StatFormBench&type=date&theme=dark&legend=bottom-right&sealed_token=5v0XpqbwEHKIpBsEtMKK-zSDza_VtI6xCwUQ7HrMqUWovCH0LW9gvvKMARcsKFtqQXMkhjncLlgHSH5UILeCln4AaZZAiZ5xpV9hNRdQwZ37_xW1DvT1cQ" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=THU-CongLab/StatFormBench&type=date&legend=bottom-right&sealed_token=5v0XpqbwEHKIpBsEtMKK-zSDza_VtI6xCwUQ7HrMqUWovCH0LW9gvvKMARcsKFtqQXMkhjncLlgHSH5UILeCln4AaZZAiZ5xpV9hNRdQwZ37_xW1DvT1cQ" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=THU-CongLab/StatFormBench&type=date&legend=bottom-right&sealed_token=5v0XpqbwEHKIpBsEtMKK-zSDza_VtI6xCwUQ7HrMqUWovCH0LW9gvvKMARcsKFtqQXMkhjncLlgHSH5UILeCln4AaZZAiZ5xpV9hNRdQwZ37_xW1DvT1cQ" />
- </picture>
-</a>
